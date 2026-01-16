@@ -104,15 +104,6 @@ fn create_window(app: &Application) {
     gl_area.set_hexpand(true);
     gl_area.set_auto_render(true);
 
-    // let state = Box::new(State {
-    //     pip: sg::Pipeline::default(),
-    //     bind: sg::Bindings::default(),
-    //     swapchain: sg::Swapchain::default(),
-    // });
-    // let user_data = Box::into_raw(state) as *mut ffi::c_void;
-
-    // unsafe { gl_area.set_data("state", user_data) };
-
     gl_area.connect_realize(|area| {
         area.make_current();
 
@@ -143,7 +134,18 @@ fn create_window(app: &Application) {
         Propagation::Proceed
     });
 
-    window.add(&gl_area);
+    let button = gtk::Button::with_label("Click me!");
+    button.set_halign(gtk::Align::Start);
+    button.set_valign(gtk::Align::Start);
+    button.set_margin_start(8);
+    button.set_margin_top(8);
+
+    let overlay = gtk::Overlay::new();
+    overlay.add_overlay(&gl_area);
+    overlay.add_overlay(&button);
+
+    window.add(&overlay);
+
     window.show_all();
 }
 
