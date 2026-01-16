@@ -2,7 +2,7 @@
 
 This is an example of using the excellent [Sokol graphics library](https://github.com/floooh/sokol) inside a GTK app.
 
-![Screenshot](screenhot.png)
+![Screenshot](screenshot.png)
 
 The project uses GTK3, because the project I’m working on uses GTK3, not 4, sorry.
 
