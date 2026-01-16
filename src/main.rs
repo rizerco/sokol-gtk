@@ -4,6 +4,7 @@ use gdk::glib::Propagation;
 use gl::types::GLint;
 use gtk::prelude::*;
 use gtk::{Application, ApplicationWindow};
+use rand::Rng;
 use sokol::gfx::VertexFormat;
 use sokol::gfx::{self as sg};
 
@@ -14,6 +15,7 @@ struct State {
     bind: sg::Bindings,
     pip: sg::Pipeline,
     swapchain: sg::Swapchain,
+    clear_color: sg::Color,
 }
 
 unsafe impl Send for State {}
@@ -75,12 +77,7 @@ extern "C" fn frame(area: &gtk::GLArea) {
 
         let mut pass_action = sg::PassAction::new();
         pass_action.colors[0].load_action = sg::LoadAction::Clear;
-        pass_action.colors[0].clear_value = sg::Color {
-            r: 0.0,
-            g: 0.0,
-            b: 0.2,
-            a: 1.0,
-        };
+        pass_action.colors[0].clear_value = state.clear_color;
 
         sg::begin_pass(&sg::Pass {
             action: pass_action,
@@ -139,6 +136,9 @@ fn create_window(app: &Application) {
     button.set_valign(gtk::Align::Start);
     button.set_margin_start(8);
     button.set_margin_top(8);
+    button.connect_clicked(move |_| {
+        randomize_clear_color();
+    });
 
     let overlay = gtk::Overlay::new();
     overlay.add_overlay(&gl_area);
@@ -174,4 +174,13 @@ fn main() {
     });
 
     app.run();
+}
+
+fn randomize_clear_color() {
+    STATE.with_borrow_mut(|state| {
+        let mut rng = rand::rng();
+        state.clear_color.r = rng.random_range(0.0..0.2);
+        state.clear_color.g = rng.random_range(0.0..0.2);
+        state.clear_color.b = rng.random_range(0.0..0.2);
+    });
 }
